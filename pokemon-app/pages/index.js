@@ -1,38 +1,50 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
+import dynamic from 'next/dynamic';
+import useInView from 'react-cool-inview';
 
-import { useFetchCategories } from './api/useFetchCategories';
-import useFetchPokemon from './api/useFetchPokemon';
-import SearchBar from './components/home/SearchBar';
-import Pokemons from './components/home/Pokemons';
+import { useFetchCategories, useFetchSpecificCategory } from './api/useFetch';
+
+const Pokemons = dynamic(() => import('./components/home/Pokemons'));
 
 export default function Home() {
-  const {
-    status: pokemonStatus,
-    data: pokemon,
-    error: pokemonError,
-  } = useFetchPokemon();
   const {
     status: categoriesStatus,
     data: categories,
     error: categoriesError,
   } = useFetchCategories();
 
+  const [category, setCategory] = useState('all');
+  const pokemonByCategory = useFetchSpecificCategory(category);
+
+  // TODO: is this work? pagination or lazy loading - come back later
+  const { observe, inView } = useInView({
+    onEnter: ({ unobserve }) => unobserve(),
+  });
+
   return (
     <MainWrapper>
       <h1>Pokemon Wiki</h1>
-      {pokemonStatus === 'loading' || categoriesStatus === 'loading' ? (
+      {categoriesStatus === 'loading' ? (
         <MessageContainer>
           <h3>Loading...</h3>
         </MessageContainer>
-      ) : pokemonError === 'error' || categoriesError === 'error' ? (
+      ) : categoriesError === 'error' ? (
         <MessageContainer>
           <span>Error: {error.message}</span>
         </MessageContainer>
       ) : (
         <>
-          <SearchBar categories={categories} />
-          <Pokemons />
+          <div ref={observe}>
+            {inView && (
+              <Pokemons
+                categories={categories}
+                setCategory={setCategory}
+                category={category}
+                pokemonByCategory={pokemonByCategory}
+              />
+            )}
+          </div>
         </>
       )}
     </MainWrapper>
