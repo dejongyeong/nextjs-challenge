@@ -8,9 +8,11 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "axios": "^0.24.0",
     "next": "12.0.7",
     "react": "17.0.2",
     "react-dom": "17.0.2",
+    "react-query": "^3.34.7",
     "styled-components": "^5.3.3"
   },
   "devDependencies": {
