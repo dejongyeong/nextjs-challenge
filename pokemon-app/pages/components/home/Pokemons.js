@@ -1,21 +1,36 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 
-function PokemonList({ category, pokemons }) {
-  // TODO: create modal
+function PokemonList({ category, pokemons, searchValue }) {
+  // TODO: handle no data message
   return (
     <>
       {category === 'all'
-        ? pokemons?.results?.map((pokemon) => (
-            <Items key={pokemon.name} onClick={() => alert('hello')}>
-              {pokemon.name}
-            </Items>
-          ))
-        : pokemons?.pokemon?.map((pokemonbc) => (
-            <Items key={pokemonbc.pokemon.name} onClick={() => alert('hello')}>
-              {pokemonbc.pokemon.name}
-            </Items>
-          ))}
+        ? pokemons.results
+            .filter((item) => {
+              return Object.values(item)
+                .join('')
+                .toLowerCase()
+                .includes(searchValue.toLowerCase());
+            })
+            .map((filtered) => (
+              <Items key={filtered.name} onClick={() => alert('hello')}>
+                {filtered.name}
+              </Items>
+            ))
+        : pokemons.pokemon
+            .filter((item) => {
+              return Object.values(item.pokemon.name)
+                .join('')
+                .toLowerCase()
+                .includes(searchValue.toLowerCase());
+            })
+            .map((filtered) => (
+              <Items key={filtered.pokemon.name} onClick={() => alert('hello')}>
+                {console.log(array)}
+                {filtered.pokemon.name}
+              </Items>
+            ))}
     </>
   );
 }
@@ -31,28 +46,27 @@ export default function Pokemons({
     data: pokemons,
     error: pokemonByCategoryError,
   } = pokemonByCategory;
+  const [searchValue, setSearchValue] = useState('');
 
   return (
     <>
       <SearchContainer>
         <SelectWrapper>
           <label htmlFor="categories">Categories: </label>
-          {typeof window !== 'undefined' && (
-            <select
-              name="categories"
-              value={category}
-              onChange={(e) => {
-                setCategory(e.target.value);
-              }}
-            >
-              <option value="all">All</option>
-              {categories?.results?.map((category, index) => (
-                <option key={index} value={category.name}>
-                  {category.name}
-                </option>
-              ))}
-            </select>
-          )}
+          <select
+            name="categories"
+            value={category}
+            onChange={(e) => {
+              setCategory(e.target.value);
+            }}
+          >
+            <option value="all">All</option>
+            {categories?.results?.map((category, index) => (
+              <option key={index} value={category.name}>
+                {category.name}
+              </option>
+            ))}
+          </select>
         </SelectWrapper>
         <SearchWrapper>
           <label htmlFor="search">Search: </label>
@@ -60,7 +74,7 @@ export default function Pokemons({
             type="text"
             id="search"
             name="search"
-            placeholder="pikachu"
+            placeholder="Pikachu"
             onChange={(e) => setSearchValue(e.target.value)}
           />
         </SearchWrapper>
@@ -71,12 +85,18 @@ export default function Pokemons({
         ) : pokemonByCategoryError === 'error' ? (
           <div>Error...</div>
         ) : (
-          <PokemonList category={category} pokemons={pokemons} />
+          <PokemonList
+            category={category}
+            pokemons={pokemons}
+            searchValue={searchValue}
+          />
         )}
       </ListContainer>
     </>
   );
 }
+
+/******************** styled components ************************/
 
 const SearchContainer = styled.div`
   display: grid;
@@ -129,7 +149,7 @@ const ListContainer = styled.div`
   width: 100%;
   max-width: 100%;
   margin: 1.8em auto 1em auto;
-  padding: 1.3em 0;
+  padding: 1.3em;
   height: 80vh;
   overflow-y: auto;
   ::-webkit-scrollbar {
@@ -146,7 +166,7 @@ const Items = styled.div`
   align-items: center;
   justify-content: center;
   padding: 1rem;
-  background-color: #f6f6f6;
+  background-color: #f9f9f9;
   border-radius: 0.5em;
   -webkit-box-shadow: 1px 7px 17px -4px rgba(255, 255, 255, 0.41);
   box-shadow: 1px 7px 17px -4px rgba(255, 255, 255, 0.41);

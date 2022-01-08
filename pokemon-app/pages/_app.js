@@ -4,37 +4,7 @@ import * as styled from 'styled-components';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';
 
-const GlobalStyle = styled.createGlobalStyle`
-  *,
-  *::before,
-  *::after {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-  }
-  html,
-  body,
-  input,
-  select {
-    font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, Segoe UI,
-      Roboto, Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue,
-      sans-serif;
-  }
-  body {
-    height: 100vh;
-    background: linear-gradient(
-      344deg,
-      rgba(34, 193, 195, 1) 4%,
-      rgba(81, 90, 218, 1) 100%
-    );
-  }
-  a {
-    color: inherit;
-    text-decoration: none;
-  }
-`;
-
-function MyApp({ Component, pageProps }) {
+export default function MyApp({ Component, pageProps }) {
   const [queryClient] = React.useState(() => new QueryClient());
   return (
     <>
@@ -67,4 +37,34 @@ function MyApp({ Component, pageProps }) {
   );
 }
 
-export default MyApp;
+/******************** styled components ************************/
+
+const GlobalStyle = styled.createGlobalStyle`
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+  html,
+  body,
+  input,
+  select {
+    font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, Segoe UI,
+      Roboto, Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue,
+      sans-serif;
+  }
+  body {
+    height: 100vh;
+    background: linear-gradient(
+      344deg,
+      rgba(34, 193, 195, 1) 4%,
+      rgba(81, 90, 218, 1) 100%
+    );
+  }
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+`;

@@ -18,6 +18,7 @@ export default function Home() {
   const pokemonByCategory = useFetchSpecificCategory(category);
 
   // TODO: is this work? pagination or lazy loading - come back later
+  // reference: https://www.better.dev/lazy-loading-next-js
   const { observe, inView } = useInView({
     onEnter: ({ unobserve }) => unobserve(),
   });
@@ -50,6 +51,8 @@ export default function Home() {
     </MainWrapper>
   );
 }
+
+/******************** styled components ************************/
 
 const MainWrapper = styled.div`
   width: 90%;
