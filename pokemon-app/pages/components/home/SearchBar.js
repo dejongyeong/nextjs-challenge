@@ -38,6 +38,7 @@ const Container = styled.div`
   margin-top: 1.5em;
   padding: 0.2em;
   font-size: 0.95em;
+  width: 100%;
 `;
 
 const SelectWrapper = styled.div`

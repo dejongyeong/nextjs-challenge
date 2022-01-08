@@ -4,8 +4,7 @@ import styled from 'styled-components';
 import { useFetchCategories } from './api/useFetchCategories';
 import useFetchPokemon from './api/useFetchPokemon';
 import SearchBar from './components/home/SearchBar';
-
-const Pokemons = () => {};
+import Pokemons from './components/home/Pokemons';
 
 export default function Home() {
   const {
@@ -33,6 +32,7 @@ export default function Home() {
       ) : (
         <>
           <SearchBar categories={categories} />
+          <Pokemons />
         </>
       )}
     </MainWrapper>
@@ -43,7 +43,6 @@ const MainWrapper = styled.div`
   width: 90%;
   margin: 3% auto;
   color: #ffffff;
-  border: 1px solid black;
   h1 {
     letter-spacing: 0.2rem;
     font-weight: bold;
