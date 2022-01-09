@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import Image from 'next/image';
 import { POKEMON_TYPE_COLORS } from '../../utils';
 
 const COLORS = POKEMON_TYPE_COLORS;
@@ -26,15 +27,33 @@ export default function StatsModal({ show, onClose, pokemon }) {
               </a>
             </ModalHeader>
             <ModalBody>
-              <p>#{padLeadingZeros(pokemon.id, 4)}</p>
-              <h2>{pokemon.name}</h2>
-              <TypeContainer>
-                {pokemon.types.map((items) => (
-                  <Type key={items.slot} bg={COLORS[`${items.type.name}`]}>
-                    <p>{items.type.name}</p>
-                  </Type>
-                ))}
-              </TypeContainer>
+              <FlexContainer>
+                <PokemonInfo>
+                  <p>#{padLeadingZeros(pokemon.id, 4)}</p>
+                  <h2>{pokemon.name}</h2>
+                  <PokemonWH>
+                    <b>Weight:</b> {pokemon.weight} kg
+                  </PokemonWH>
+                  <PokemonWH>
+                    <b>Height:</b> {pokemon.height} m
+                  </PokemonWH>
+                  <FlexContainer>
+                    {pokemon.types.map((items) => (
+                      <Type key={items.slot} bg={COLORS[`${items.type.name}`]}>
+                        <p>{items.type.name}</p>
+                      </Type>
+                    ))}
+                  </FlexContainer>
+                </PokemonInfo>
+                <PokemonImage>
+                  <Image
+                    src={pokemon.sprites.other.dream_world.front_default}
+                    alt={pokemon.name}
+                    width={150}
+                    height={150}
+                  />
+                </PokemonImage>
+              </FlexContainer>
             </ModalBody>
           </Modal>
         </ModalContainer>
@@ -74,24 +93,42 @@ const ModalHeader = styled.div`
 
 const ModalBody = styled.div`
   padding-top: 10px;
-  text-transform: capitalize;
+`;
+
+const FlexContainer = styled.div`
+  display: flex;
+  flex: 1 1 0px;
+  gap: 0.6em;
+  margin: 0.8em auto 0 auto;
+`;
+
+const PokemonInfo = styled.div`
+  width: 50%;
   h2 {
-    margin-top: 0.35em;
+    margin: 0.35em auto;
+    text-transform: capitalize;
   }
 `;
 
-const TypeContainer = styled.div`
+const PokemonWH = styled.p`
+  font-size: 0.85em;
+  margin-bottom: 0.3em;
+`;
+
+const PokemonImage = styled.div`
   display: flex;
-  gap: 0.6em;
-  margin: 0.8em auto 0 auto;
+  align-items: center;
+  justify-content: center;
+  width: 50%;
 `;
 
 const Type = styled.div`
   color: #ffffff;
   background: ${({ bg }) => bg};
-  padding: 0.4em;
+  padding: 0.4em 0.6em;
   border-radius: 1em;
   p {
     font-size: 0.9em;
+    text-transform: capitalize;
   }
 `;
