@@ -1,6 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
 import Image from 'next/image';
+import dynamic from 'next/dynamic';
+
 import { POKEMON_TYPE_COLORS } from '../../utils';
 
 const COLORS = POKEMON_TYPE_COLORS;
@@ -8,6 +10,9 @@ const COLORS = POKEMON_TYPE_COLORS;
 const padLeadingZeros = (num, size) => {
   return num.toString().padStart(size, '0');
 };
+
+// reference: https://nextjs.org/docs/advanced-features/dynamic-import
+const RadarChart = dynamic(() => import('./RadarChart'), { ssr: false });
 
 // Reference: https://devrecipes.net/modal-component-with-next-js/
 export default function StatsModal({ show, onClose, pokemon }) {
@@ -55,6 +60,7 @@ export default function StatsModal({ show, onClose, pokemon }) {
                 </PokemonImage>
               </FlexContainer>
               <hr />
+              <RadarChart stats={pokemon.stats} />
             </ModalBody>
           </Modal>
         </ModalContainer>
