@@ -54,6 +54,7 @@ export default function StatsModal({ show, onClose, pokemon }) {
                   />
                 </PokemonImage>
               </FlexContainer>
+              <hr />
             </ModalBody>
           </Modal>
         </ModalContainer>
@@ -93,6 +94,10 @@ const ModalHeader = styled.div`
 
 const ModalBody = styled.div`
   padding-top: 10px;
+  hr {
+    margin: 1.5em auto 1em auto;
+    border-color: #f6f6f6;
+  }
 `;
 
 const FlexContainer = styled.div`
@@ -107,12 +112,13 @@ const PokemonInfo = styled.div`
   h2 {
     margin: 0.35em auto;
     text-transform: capitalize;
+    font-size: 2.5em;
   }
 `;
 
 const PokemonWH = styled.p`
-  font-size: 0.85em;
-  margin-bottom: 0.3em;
+  font-size: 0.84em;
+  margin-bottom: 0.4em;
 `;
 
 const PokemonImage = styled.div`
@@ -127,6 +133,7 @@ const Type = styled.div`
   background: ${({ bg }) => bg};
   padding: 0.4em 0.6em;
   border-radius: 1em;
+  margin-top: 0.4em;
   p {
     font-size: 0.9em;
     text-transform: capitalize;
