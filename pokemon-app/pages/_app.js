@@ -55,14 +55,6 @@ const GlobalStyle = styled.createGlobalStyle`
       Roboto, Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue,
       sans-serif;
   }
-  body {
-    height: 100vh;
-    background: linear-gradient(
-      344deg,
-      rgba(34, 193, 195, 1) 4%,
-      rgba(81, 90, 218, 1) 100%
-    );
-  }
   a {
     color: inherit;
     text-decoration: none;

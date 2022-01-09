@@ -13,14 +13,15 @@ export function useFetchCategories() {
 export function useFetchSpecificCategory(category) {
   const fetchPokemonByCategory = async (category) => {
     // TODO: use pagination? this is hard-coded for now - future improvement
-    const uri =
+    const url =
       category === 'all'
         ? `${API_URL}/pokemon?limit=1181`
         : `${API_URL}/type/${category}`;
-    const { data } = await axios.get(uri);
+    const { data } = await axios.get(url);
     return data;
   };
 
+  // query will not execute if url is empty
   return useQuery(
     ['category', category],
     () => fetchPokemonByCategory(category),
@@ -30,9 +31,14 @@ export function useFetchSpecificCategory(category) {
   );
 }
 
-function useFetchSpecificPokemon(name) {
-  return useQuery('pokemon', async () => {
-    const { data } = await axios.get(`${API_URL}/pokemon/${name}`);
+export function useFetchSpecificPokemon(url) {
+  const fetchSpecificPokemon = async (url) => {
+    const { data } = await axios.get(url);
     return data;
+  };
+
+  // query will not execute if url is empty
+  return useQuery(['pokemon', url], () => fetchSpecificPokemon(url), {
+    enabled: Boolean(url),
   });
 }

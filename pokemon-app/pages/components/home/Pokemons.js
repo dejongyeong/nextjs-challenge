@@ -1,8 +1,17 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
+import { useFetchSpecificPokemon } from '../../api/useFetch';
+import StatsModal from './StatsModal';
 
-function PokemonList({ category, pokemons, searchValue }) {
+const PokemonList = ({
+  category,
+  pokemons,
+  searchValue,
+  setPokemonQuery,
+  setShowModal,
+}) => {
   // TODO: handle no data message
+
   return (
     <>
       {category === 'all'
@@ -14,7 +23,13 @@ function PokemonList({ category, pokemons, searchValue }) {
                 .includes(searchValue.toLowerCase());
             })
             .map((filtered) => (
-              <Items key={filtered.name} onClick={() => alert('hello')}>
+              <Items
+                key={filtered.name}
+                onClick={() => {
+                  setPokemonQuery(filtered.url);
+                  setShowModal(true);
+                }}
+              >
                 {filtered.name}
               </Items>
             ))
@@ -26,14 +41,19 @@ function PokemonList({ category, pokemons, searchValue }) {
                 .includes(searchValue.toLowerCase());
             })
             .map((filtered) => (
-              <Items key={filtered.pokemon.name} onClick={() => alert('hello')}>
-                {console.log(array)}
+              <Items
+                key={filtered.pokemon.name}
+                onClick={() => {
+                  setPokemonQuery(filtered.pokemon.url);
+                  setShowModal(true);
+                }}
+              >
                 {filtered.pokemon.name}
               </Items>
             ))}
     </>
   );
-}
+};
 
 export default function Pokemons({
   categories,
@@ -42,31 +62,44 @@ export default function Pokemons({
   pokemonByCategory,
 }) {
   const {
-    status: pokemonByCategoryStatus,
+    isLoading: pbcIsLoading,
+    isError: pbcIsError,
     data: pokemons,
-    error: pokemonByCategoryError,
   } = pokemonByCategory;
   const [searchValue, setSearchValue] = useState('');
+
+  // set pokemon query parameter
+  const [pokemonQuery, setPokemonQuery] = useState('');
+  const {
+    isLoading: pqIsLoading,
+    isError: pqIsError,
+    data: pokemon,
+  } = useFetchSpecificPokemon(pokemonQuery);
+
+  // set show modal
+  const [showModal, setShowModal] = useState(false);
 
   return (
     <>
       <SearchContainer>
         <SelectWrapper>
           <label htmlFor="categories">Categories: </label>
-          <select
-            name="categories"
-            value={category}
-            onChange={(e) => {
-              setCategory(e.target.value);
-            }}
-          >
-            <option value="all">All</option>
-            {categories?.results?.map((category, index) => (
-              <option key={index} value={category.name}>
-                {category.name}
-              </option>
-            ))}
-          </select>
+          {typeof window !== 'undefined' && (
+            <select
+              name="categories"
+              value={category}
+              onChange={(e) => {
+                setCategory(e.target.value);
+              }}
+            >
+              <option value="all">All</option>
+              {categories?.results?.map((category, index) => (
+                <option key={index} value={category.name}>
+                  {category.name}
+                </option>
+              ))}
+            </select>
+          )}
         </SelectWrapper>
         <SearchWrapper>
           <label htmlFor="search">Search: </label>
@@ -80,16 +113,33 @@ export default function Pokemons({
         </SearchWrapper>
       </SearchContainer>
       <ListContainer>
-        {pokemonByCategoryStatus === 'loading' ? (
+        {pbcIsLoading ? (
           <div>Loading...</div>
-        ) : pokemonByCategoryError === 'error' ? (
+        ) : pbcIsError ? (
           <div>Error...</div>
         ) : (
-          <PokemonList
-            category={category}
-            pokemons={pokemons}
-            searchValue={searchValue}
-          />
+          <>
+            <PokemonList
+              category={category}
+              pokemons={pokemons}
+              searchValue={searchValue}
+              setPokemonQuery={setPokemonQuery}
+              setShowModal={setShowModal}
+            />
+            {typeof window !== 'undefined' &&
+              pokemonQuery &&
+              !pqIsLoading &&
+              !pqIsError && (
+                <StatsModal
+                  onClose={() => {
+                    setShowModal(false);
+                    setPokemonQuery('');
+                  }}
+                  show={showModal}
+                  pokemon={pokemon}
+                />
+              )}
+          </>
         )}
       </ListContainer>
     </>
@@ -102,7 +152,7 @@ const SearchContainer = styled.div`
   display: grid;
   grid-template-columns: 0.9fr 0.9fr;
   gap: 1.5em;
-  margin-top: 3%;
+  margin: 3rem auto 1em auto;
   padding: 0.2em;
   font-size: 0.95em;
   width: 100%;
@@ -143,13 +193,14 @@ const SearchWrapper = styled.div`
 
 const ListContainer = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  grid-template-columns: 1fr 1fr 1fr;
+  justify-content: center;
   align-items: center;
   grid-gap: 1.2em;
   width: 100%;
   max-width: 100%;
-  margin: 1.8em auto 1em auto;
-  padding: 1.3em;
+  margin: 1.5em auto 1em auto;
+  padding: 1.3em 0.1em;
   height: 80vh;
   overflow-y: auto;
   ::-webkit-scrollbar {
