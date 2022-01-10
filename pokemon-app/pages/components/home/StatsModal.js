@@ -4,14 +4,14 @@ import Image from 'next/image';
 import dynamic from 'next/dynamic';
 
 import { POKEMON_TYPE_COLORS } from '../../utils';
-
 const COLORS = POKEMON_TYPE_COLORS;
 
 const padLeadingZeros = (num, size) => {
-  return num.toString().padStart(size, '0');
+  return `#${num.toString().padStart(size, '0')}`;
 };
 
 // reference: https://nextjs.org/docs/advanced-features/dynamic-import
+// make it into client-side rendering
 const RadarChart = dynamic(() => import('./RadarChart'), { ssr: false });
 
 // Reference: https://devrecipes.net/modal-component-with-next-js/
@@ -32,35 +32,44 @@ export default function StatsModal({ show, onClose, pokemon }) {
               </a>
             </ModalHeader>
             <ModalBody>
-              <FlexContainer>
+              <PokemonInfoWrapper>
                 <PokemonInfo>
-                  <p>#{padLeadingZeros(pokemon.id, 4)}</p>
-                  <h2>{pokemon.name}</h2>
-                  <PokemonWH>
+                  <Text>{padLeadingZeros(pokemon.id, 4)}</Text>
+                  <PokemonImage>
+                    {/* use other image if svg not available */}
+                    <Image
+                      src={
+                        pokemon.sprites.other.dream_world.front_default
+                          ? pokemon.sprites.other.dream_world.front_default
+                          : pokemon.sprites.other['official-artwork']
+                              .front_default
+                      }
+                      alt={pokemon.name}
+                      width={100}
+                      height={100}
+                    />
+                  </PokemonImage>
+                  <TextHeader>{pokemon.name}</TextHeader>
+                  <Text>
                     <b>Weight:</b> {pokemon.weight} kg
-                  </PokemonWH>
-                  <PokemonWH>
+                  </Text>
+                  <Text>
                     <b>Height:</b> {pokemon.height} m
-                  </PokemonWH>
-                  <FlexContainer>
+                  </Text>
+                  <PokemonTypeWrapper>
                     {pokemon.types.map((items) => (
                       <Type key={items.slot} bg={COLORS[`${items.type.name}`]}>
-                        <p>{items.type.name}</p>
+                        <Text>{items.type.name}</Text>
                       </Type>
                     ))}
-                  </FlexContainer>
+                  </PokemonTypeWrapper>
                 </PokemonInfo>
-                <PokemonImage>
-                  <Image
-                    src={pokemon.sprites.other.dream_world.front_default}
-                    alt={pokemon.name}
-                    width={150}
-                    height={150}
-                  />
-                </PokemonImage>
-              </FlexContainer>
-              <hr />
-              <RadarChart stats={pokemon.stats} />
+                <RadarChart stats={pokemon.stats} />
+              </PokemonInfoWrapper>
+              <HorizontalLine />
+              <EvolutionFormWrapper>
+                <TextHeader>Evolution Forms</TextHeader>
+              </EvolutionFormWrapper>
             </ModalBody>
           </Modal>
         </ModalContainer>
@@ -86,10 +95,26 @@ const ModalContainer = styled.div`
 const Modal = styled.div`
   background: white;
   color: #000000;
-  width: 70%;
-  height: max-content;
+  width: 38%;
+  height: 69%;
   border-radius: 14px;
   padding: 1em 1.5em;
+  @media (max-width: 1440.02px) {
+    width: 70%;
+  }
+  @media (max-width: 1024.02px) {
+    overflow-y: scroll;
+    ::-webkit-scrollbar {
+      width: 0;
+      background: transparent;
+    }
+  }
+  @media (max-width: 768.02px) {
+    width: 80%;
+  }
+  @media (max-width: 425.02px) {
+    width: 90%;
+  }
 `;
 
 const ModalHeader = styled.div`
@@ -100,48 +125,59 @@ const ModalHeader = styled.div`
 
 const ModalBody = styled.div`
   padding-top: 10px;
-  hr {
-    margin: 1.5em auto 1em auto;
-    border-color: #f6f6f6;
+`;
+
+const HorizontalLine = styled.hr`
+  margin: 1em auto;
+  border-color: #f6f6f6;
+`;
+
+const PokemonTypeWrapper = styled.div`
+  display: flex;
+  flex: 1 1 0px;
+  gap: 0.5em;
+  margin: 0 auto;
+`;
+
+const PokemonInfoWrapper = styled(PokemonTypeWrapper)`
+  @media (max-width: 768.02px) {
+    display: block;
   }
 `;
 
-const FlexContainer = styled.div`
-  display: flex;
-  flex: 1 1 0px;
-  gap: 0.6em;
-  margin: 0.8em auto 0 auto;
+const Text = styled.p`
+  font-size: 0.87em;
+  line-height: 1.5em;
+  &:last-child {
+    text-transform: capitalize;
+  }
+`;
+
+const TextHeader = styled.h2`
+  text-transform: capitalize;
+  font-size: clamp(1.2em, 4vw, 2.2em);
+  margin: 0.1em auto 0.2em auto;
+  &:last-child {
+    font-size: clamp(0.85em, 2.5vw, 1.05em);
+  }
 `;
 
 const PokemonInfo = styled.div`
-  width: 50%;
-  h2 {
-    margin: 0.35em auto;
-    text-transform: capitalize;
-    font-size: 2.5em;
-  }
-`;
-
-const PokemonWH = styled.p`
-  font-size: 0.84em;
-  margin-bottom: 0.4em;
+  width: 40%;
 `;
 
 const PokemonImage = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 50%;
+  margin: 1em auto 0.4em auto;
+  text-align: center;
 `;
 
 const Type = styled.div`
   color: #ffffff;
   background: ${({ bg }) => bg};
   padding: 0.4em 0.6em;
-  border-radius: 1em;
-  margin-top: 0.4em;
-  p {
-    font-size: 0.9em;
-    text-transform: capitalize;
-  }
+  margin-top: 0.5em;
+`;
+
+const EvolutionFormWrapper = styled.div`
+  background-color: pink;
 `;

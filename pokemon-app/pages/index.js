@@ -63,7 +63,7 @@ const HomeContainer = styled.div`
 
 const MainWrapper = styled.div`
   width: 90%;
-  height: 100%;
+  height: 80%;
   margin: 0 auto;
   color: #ffffff;
   h1 {

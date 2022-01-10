@@ -13,6 +13,8 @@ export function useFetchCategories() {
 export function useFetchSpecificCategory(category) {
   const fetchPokemonByCategory = async (category) => {
     // TODO: use pagination? this is hard-coded for now - future improvement
+    // 898 is the last unique pokemon
+    // here we are not using /pokemon-species is because it does have the type info
     const url =
       category === 'all'
         ? `${API_URL}/pokemon?limit=1181`

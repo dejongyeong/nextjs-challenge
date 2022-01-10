@@ -10,8 +10,7 @@ const PokemonList = ({
   setPokemonQuery,
   setShowModal,
 }) => {
-  // TODO: handle no data message
-
+  // TODO: improvement - handle no data message
   return (
     <>
       {category === 'all'
@@ -104,7 +103,7 @@ export default function Pokemons({
         <SearchWrapper>
           <label htmlFor="search">Search: </label>
           <input
-            type="text"
+            type="search"
             id="search"
             name="search"
             placeholder="Pikachu"
@@ -182,18 +181,21 @@ const SearchWrapper = styled.div`
   justify-content: center;
   input {
     width: 100%;
-    padding: 7px 40px 7px 10px;
+    padding: 7px 10px 7px 10px;
     border: 1px solid #e8eaed;
     border-radius: 5px;
     background: white;
     box-shadow: 0 1px 3px -2px #9098a9;
-    cursor: pointer;
+    ::-webkit-search-cancel-button {
+      cursor: pointer;
+    }
   }
 `;
 
 const ListContainer = styled.div`
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
+  grid-auto-rows: max-content;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
   justify-content: center;
   align-items: center;
   grid-gap: 1.2em;
@@ -201,7 +203,7 @@ const ListContainer = styled.div`
   max-width: 100%;
   margin: 1.5em auto 1em auto;
   padding: 1.3em 0.1em;
-  height: 80vh;
+  height: 75vh;
   overflow-y: auto;
   ::-webkit-scrollbar {
     width: 0;
