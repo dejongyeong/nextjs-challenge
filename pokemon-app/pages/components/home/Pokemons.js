@@ -155,13 +155,21 @@ const SearchContainer = styled.div`
   padding: 0.2em;
   font-size: 0.95em;
   width: 100%;
+  @media (max-width: 600.02px) {
+    display: block;
+  }
 `;
 
-const SelectWrapper = styled.div`
-  display: flex;
+const CommonFlexProperties = styled.div`
+  display: grid;
+  grid-auto-columns: minmax(0, 1fr);
+  grid-auto-flow: row;
   gap: 0.7em;
   align-items: center;
   justify-content: center;
+`;
+
+const SelectWrapper = styled(CommonFlexProperties)`
   select {
     text-transform: capitalize;
     width: 100%;
@@ -174,11 +182,7 @@ const SelectWrapper = styled.div`
   }
 `;
 
-const SearchWrapper = styled.div`
-  display: flex;
-  gap: 0.7em;
-  align-items: center;
-  justify-content: center;
+const SearchWrapper = styled(CommonFlexProperties)`
   input {
     width: 100%;
     padding: 7px 10px 7px 10px;
@@ -190,6 +194,9 @@ const SearchWrapper = styled.div`
       cursor: pointer;
     }
   }
+  @media (max-width: 530.02px) {
+    margin-top: 0.8em;
+  }
 `;
 
 const ListContainer = styled.div`
@@ -198,11 +205,11 @@ const ListContainer = styled.div`
   grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
   justify-content: center;
   align-items: center;
-  grid-gap: 1.2em;
+  grid-gap: 1em;
   width: 100%;
   max-width: 100%;
-  margin: 1.5em auto 1em auto;
-  padding: 1.3em 0.1em;
+  margin: 1em auto;
+  padding: 1.3em 1em;
   height: 75vh;
   overflow-y: auto;
   ::-webkit-scrollbar {
@@ -219,10 +226,11 @@ const Items = styled.div`
   align-items: center;
   justify-content: center;
   padding: 1rem;
-  background-color: #f9f9f9;
+  background-color: rgba(255, 255, 255, 0.8);
+  backdrop-filter: saturate(180%) blur(10px);
   border-radius: 0.5em;
-  -webkit-box-shadow: 1px 7px 17px -4px rgba(255, 255, 255, 0.41);
-  box-shadow: 1px 7px 17px -4px rgba(255, 255, 255, 0.41);
+  -webkit-box-shadow: 1px 7px 17px -4px rgba(255, 255, 255, 0.5);
+  box-shadow: 1px 7px 17px -4px rgba(255, 255, 255, 0.5);
   cursor: pointer;
   &:hover {
     transform: translateY(-0.5rem);

@@ -45,8 +45,8 @@ export default function StatsModal({ show, onClose, pokemon }) {
                               .front_default
                       }
                       alt={pokemon.name}
-                      width={100}
-                      height={100}
+                      width={125}
+                      height={125}
                     />
                   </PokemonImage>
                   <TextHeader>{pokemon.name}</TextHeader>
@@ -95,7 +95,7 @@ const ModalContainer = styled.div`
 const Modal = styled.div`
   background: white;
   color: #000000;
-  width: 38%;
+  width: 40%;
   height: 69%;
   border-radius: 14px;
   padding: 1em 1.5em;
@@ -128,7 +128,7 @@ const ModalBody = styled.div`
 `;
 
 const HorizontalLine = styled.hr`
-  margin: 1em auto;
+  margin: 0.5em auto;
   border-color: #f6f6f6;
 `;
 
@@ -155,7 +155,7 @@ const Text = styled.p`
 
 const TextHeader = styled.h2`
   text-transform: capitalize;
-  font-size: clamp(1.2em, 4vw, 2.2em);
+  font-size: clamp(1.2em, 4vw, 2em);
   margin: 0.1em auto 0.2em auto;
   &:last-child {
     font-size: clamp(0.85em, 2.5vw, 1.05em);
@@ -163,7 +163,7 @@ const TextHeader = styled.h2`
 `;
 
 const PokemonInfo = styled.div`
-  width: 40%;
+  width: 37%;
 `;
 
 const PokemonImage = styled.div`
