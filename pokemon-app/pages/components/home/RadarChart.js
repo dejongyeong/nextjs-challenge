@@ -56,7 +56,7 @@ export default function RadarChart({ stats }) {
         <CustomReactApexChart
           options={config.options}
           series={config.series}
-          height={size.width < 320.02 ? '200' : '300'}
+          height={size.width < 375.02 ? '240' : '300'}
           type="radar"
         />
       )}

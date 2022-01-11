@@ -34,82 +34,46 @@ export function useFetchSpecificCategory(category) {
   );
 }
 
-const extractPokemonEvolutionName = (evolution) => {
-  console.log(
-    evolution.data?.chain['evolves_to'][0].evolves_to[0].species.name
-  );
-  const path = evolution.data?.chain['evolves_to'];
-  // optional chaining operator to avoid error
-  // flatten references: https://javascript.plainenglish.io/how-to-search-in-nested-json-object-with-javascript-8ccfc957e95e
+// reason to flatten the json keys is to get look through sub keys and filter the keys that includes a specific string
+// then use the keys to retrieve pokemon evolution name. Also, if in future there's a 3rd evolution added, we can just
+// extract it from the flatten nested-json. however, this approach has some caveats and might run into performance issues
+// reference: https://stackoverflow.com/questions/6393943/convert-a-javascript-string-in-dot-notation-into-an-object-reference
+function extractEvolutionForms(path, currPokemon) {
   const subpaths =
     path?.length === 0
       ? null
-      : Object.keys(flatten(path[0])).filter((items) =>
+      : Object.keys(flatten(path)).filter((items) =>
           items.includes('species.name')
         );
 
-  const names = [];
+  const urls = [];
   subpaths?.map((subpath) => {
-    const data = subpath.includes('.0.')
-      ? subpath.replace(/.0/g, '[0]')
-      : subpath;
-    console.log(data);
-    const name = `evolution.data.chain['evolves_to'][0].` + `${data}`;
-    names.push(name); // pokemon name
+    const name = subpath.split('.').reduce((obj, indx) => obj[indx], path); // join into [0][evolves_to][...] format
+    urls.push(`${API_URL}/pokemon/${name}`); // pokemon evolution form names
   });
-  console.log(names);
-  return names;
-};
+
+  // get the evolution order right. can also loop inversely
+  return urls.filter((url) => !url.includes(currPokemon)).reverse();
+}
+
+async function fetchEvolutions(url, currPokemon) {
+  const data = await axios
+    .get(url)
+    .then((response) => {
+      return response.data['evolution_chain'].url;
+    })
+    .then(async (response) => {
+      const evolution = await axios.get(response);
+      const urls = extractEvolutionForms(evolution.data?.chain, currPokemon);
+      // TODO: return urls and get name and sprites
+      return evolution.data.chain['evolves_to'];
+    });
+}
 
 export function useFetchSpecificPokemon(url) {
-  const fetchEvolutions = async (url) => {
-    const data = await axios
-      .get(url)
-      .then((response) => {
-        return response.data['evolution_chain'].url;
-      })
-      .then(async (response) => {
-        const evolution = await axios.get(response);
-        // according to api doc, the main ['evolves_to'] key will have only 1 item
-        // TODO: check the path
-        const subpath = extractPokemonEvolutionName(evolution);
-        // console.log(`evolution.data.chain['evolves_to']` + subpath[1]);
-        return evolution.data.chain['evolves_to'];
-      });
-
-    // TODO: use pokemon name to call to /pokemon/[name] api and get the image
-
-    // const res =
-    //   data?.length === 0
-    //     ? null
-    //     : data
-    //         .filter((item) => {
-    //           return Object.keys(item).join('').includes('species');
-    //         })
-    //         .reduce((cur, key) => {
-    //           return Object.assign(cur, { [key]: data[key] }), {};
-    //         });
-
-    // const found = Object.keys(flatten(res)).find(
-    //   (key) => flatten(res)[key] === 'species'
-    // );
-
-    // res
-    //   ? console.log('oops')
-    //   : console.log(
-    //       Object.keys(flatten(res)).find(
-    //         (key) => flatten(res)[key] === 'species'
-    //       )
-    //     );
-    // const rest = (o, s) =>
-    //   [o] == o ||
-    //   Object.keys(o).map((k) => f(o[k], (k = s ? s + [, k] : k), print(k)));
-    // console.log(res);
-  };
-
   const fetchSpecificPokemon = async (url) => {
     const { data } = await axios.get(url);
-    fetchEvolutions(data.species.url);
+    fetchEvolutions(data.species.url, data.species.name);
     return data;
   };
 

@@ -145,6 +145,13 @@ const PokemonInfoWrapper = styled(PokemonTypeWrapper)`
   }
 `;
 
+const PokemonInfo = styled.div`
+  width: 40%;
+  @media (max-width: 768.02px) {
+    width: 100%;
+  }
+`;
+
 const Text = styled.p`
   font-size: 0.87em;
   line-height: 1.5em;
@@ -155,15 +162,11 @@ const Text = styled.p`
 
 const TextHeader = styled.h2`
   text-transform: capitalize;
-  font-size: clamp(1.2em, 4vw, 2em);
+  font-size: clamp(2em, 4vw, 2.4em);
   margin: 0.1em auto 0.2em auto;
   &:last-child {
     font-size: clamp(0.85em, 2.5vw, 1.05em);
   }
-`;
-
-const PokemonInfo = styled.div`
-  width: 37%;
 `;
 
 const PokemonImage = styled.div`
