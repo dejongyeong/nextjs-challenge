@@ -131,8 +131,8 @@ const Modal = styled.div`
       background: transparent;
     }
   }
-  @media (max-width: 425.02px) {
-    width: 90%;
+  @media (max-width: 768.02px) {
+    height: 83%;
   }
 `;
 
@@ -186,7 +186,7 @@ const PokemonName = styled.h2`
 `;
 
 const PokemonImage = styled.div`
-  margin: 1.5em auto 0.4em auto;
+  margin: 1.7em auto;
   text-align: center;
 `;
 

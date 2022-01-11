@@ -25,12 +25,16 @@ export default function Home() {
         <h1>Pokemon Wiki</h1>
         {isLoading ? (
           <MessageContainer>
-            <h3>Loading...</h3>
+            <i className="fa fa-spinner fa-spin fa-5x"></i>
           </MessageContainer>
         ) : isError ? (
-          <MessageContainer>
-            <span>Error: {error.message}</span>
-          </MessageContainer>
+          <ErrorContainer>
+            <i
+              className="fa fa-exclamation-triangle fa-5x"
+              aria-hidden="true"
+            ></i>
+            <span>Error Call to PokeAPI!! Please Try Again Later...</span>
+          </ErrorContainer>
         ) : (
           <>
             <div ref={observe}>
@@ -74,9 +78,20 @@ const MainWrapper = styled.div`
 `;
 
 const MessageContainer = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
+  height: 100%;
   display: flex;
-  align-items: center;
+  flex-direction: column;
   justify-content: center;
-  margin: 1.5em auto;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.5);
+`;
+
+const ErrorContainer = styled(MessageContainer)`
+  span {
+    margin-top: 0.5em;
+  }
 `;

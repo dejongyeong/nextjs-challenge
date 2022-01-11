@@ -11,6 +11,7 @@ const PokemonList = ({
   setShowModal,
 }) => {
   // TODO: improvement - handle no data message
+
   return (
     <>
       {category === 'all'
@@ -111,36 +112,42 @@ export default function Pokemons({
           />
         </SearchWrapper>
       </SearchContainer>
-      <ListContainer>
-        {pbcIsLoading ? (
-          <div>Loading...</div>
-        ) : pbcIsError ? (
-          <div>Error...</div>
-        ) : (
-          <>
-            <PokemonList
-              category={category}
-              pokemons={pokemons}
-              searchValue={searchValue}
-              setPokemonQuery={setPokemonQuery}
-              setShowModal={setShowModal}
-            />
-            {typeof window !== 'undefined' &&
-              pokemonQuery &&
-              !pqIsLoading &&
-              !pqIsError && (
-                <StatsModal
-                  onClose={() => {
-                    setShowModal(false);
-                    setPokemonQuery('');
-                  }}
-                  show={showModal}
-                  pokemon={pokemon}
-                />
-              )}
-          </>
-        )}
-      </ListContainer>
+      {pbcIsLoading ? (
+        <MessageContainer>
+          <i className="fa fa-spinner fa-spin fa-3x"></i>
+        </MessageContainer>
+      ) : pbcIsError ? (
+        <MessageContainer>
+          <i
+            className="fa fa-exclamation-triangle fa-4x"
+            aria-hidden="true"
+          ></i>
+          <span>Error Call to PokeAPI!! Please Try Again Later...</span>
+        </MessageContainer>
+      ) : (
+        <ListContainer>
+          <PokemonList
+            category={category}
+            pokemons={pokemons}
+            searchValue={searchValue}
+            setPokemonQuery={setPokemonQuery}
+            setShowModal={setShowModal}
+          />
+          {typeof window !== 'undefined' &&
+            pokemonQuery &&
+            !pqIsLoading &&
+            !pqIsError && (
+              <StatsModal
+                onClose={() => {
+                  setShowModal(false);
+                  setPokemonQuery('');
+                }}
+                show={showModal}
+                pokemon={pokemon}
+              />
+            )}
+        </ListContainer>
+      )}
     </>
   );
 }
@@ -164,7 +171,6 @@ const CommonFlexProperties = styled.div`
   display: grid;
   grid-auto-columns: minmax(0, 1fr);
   grid-auto-flow: row;
-  gap: 0.7em;
   align-items: center;
   justify-content: center;
 `;
@@ -173,6 +179,7 @@ const SelectWrapper = styled(CommonFlexProperties)`
   select {
     text-transform: capitalize;
     width: 100%;
+    margin-top: 0.7em;
     padding: 7px 40px 7px 10px;
     border: 1px solid #e8eaed;
     border-radius: 5px;
@@ -185,7 +192,9 @@ const SelectWrapper = styled(CommonFlexProperties)`
 const SearchWrapper = styled(CommonFlexProperties)`
   input {
     width: 100%;
-    padding: 7px 10px 7px 10px;
+    height: 34px;
+    margin-top: 0.7em;
+    padding: 7px 10px;
     border: 1px solid #e8eaed;
     border-radius: 5px;
     background: white;
@@ -195,7 +204,7 @@ const SearchWrapper = styled(CommonFlexProperties)`
     }
   }
   @media (max-width: 530.02px) {
-    margin-top: 0.8em;
+    margin-top: 0.85em;
   }
 `;
 
@@ -208,7 +217,7 @@ const ListContainer = styled.div`
   grid-gap: 1em;
   width: 100%;
   max-width: 100%;
-  margin: 1em auto;
+  margin: 1.2em auto;
   padding: 1.3em 1em;
   height: 75vh;
   overflow-y: auto;
@@ -216,8 +225,8 @@ const ListContainer = styled.div`
     width: 0;
     background: transparent;
   }
-  @media (max-width: 425.02px) {
-    height: 63vh;
+  @media (max-width: 600.02px) {
+    height: 62vh;
   }
 `;
 
@@ -239,5 +248,17 @@ const Items = styled.div`
     transform: translateY(-0.5rem);
     transition-duration: 200ms;
     transition-timing-function: ease-in-out;
+  }
+`;
+
+const MessageContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  margin: 15% auto;
+  i {
+    margin-bottom: 0.1em;
   }
 `;

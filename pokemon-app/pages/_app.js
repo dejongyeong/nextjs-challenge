@@ -27,6 +27,11 @@ export default function MyApp({ Component, pageProps }) {
           href="https://fonts.googleapis.com/css2?family=Average+Sans&family=Montserrat&family=Open+Sans&family=Raleway&family=Rubik:wght@300;400&display=swap"
           rel="stylesheet"
         />
+        {/* font awesome icons */}
+        <link
+          rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+        ></link>
       </Head>
       <GlobalStyle />
       <QueryClientProvider client={queryClient}>
