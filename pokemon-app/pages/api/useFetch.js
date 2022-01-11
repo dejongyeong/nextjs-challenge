@@ -15,7 +15,7 @@ export function useFetchSpecificCategory(category) {
   const fetchPokemonByCategory = async (category) => {
     // TODO: use pagination? this is hard-coded for now - future improvement
     // 898 is the last unique pokemon
-    // here we are not using /pokemon-species is because it does have the type info
+    // here we are not using /pokemon-species route because it does have the type info
     const url =
       category === 'all'
         ? `${API_URL}/pokemon?limit=1181`
@@ -56,6 +56,20 @@ function extractEvolutionForms(path, currPokemon) {
   return urls.filter((url) => !url.includes(currPokemon)).reverse();
 }
 
+function loopEvolveForms(results) {
+  const forms = [];
+  results.map((result) => {
+    forms.push({
+      id: result.data.id,
+      name: result.data.name,
+      sprite: result.data.sprites.other.dream_world.front_default
+        ? result.data.sprites.other.dream_world.front_default
+        : result.data.sprites.other['official-artwork'].front_default,
+    });
+  });
+  return forms;
+}
+
 async function fetchEvolutions(url, currPokemon) {
   const data = await axios
     .get(url)
@@ -65,16 +79,41 @@ async function fetchEvolutions(url, currPokemon) {
     .then(async (response) => {
       const evolution = await axios.get(response);
       const urls = extractEvolutionForms(evolution.data?.chain, currPokemon);
-      // TODO: return urls and get name and sprites
-      return evolution.data.chain['evolves_to'];
+      return urls;
+    })
+    .then(async (response) => {
+      if (response.length === 0) return null;
+      // axios deprecated .all function, using Promise.all js new in-built function.
+      const evolves = await Promise.all(
+        response.map((res) => axios.get(res))
+      ).then((results) => {
+        return loopEvolveForms(results);
+      });
+      return evolves;
     });
+  return data;
 }
 
 export function useFetchSpecificPokemon(url) {
   const fetchSpecificPokemon = async (url) => {
     const { data } = await axios.get(url);
-    fetchEvolutions(data.species.url, data.species.name);
-    return data;
+    const evolutions = await fetchEvolutions(
+      data.species.url,
+      data.species.name
+    );
+
+    return {
+      id: data.id,
+      sprite: data.sprites.other.dream_world.front_default
+        ? data.sprites.other.dream_world.front_default
+        : data.sprites.other['official-artwork'].front_default,
+      name: data.name,
+      weight: data.weight,
+      height: data.height,
+      types: data.types,
+      stats: data.stats,
+      evolutions: evolutions,
+    };
   };
 
   // query will not execute if url is empty

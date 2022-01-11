@@ -38,18 +38,13 @@ export default function StatsModal({ show, onClose, pokemon }) {
                   <PokemonImage>
                     {/* use other image if svg not available */}
                     <Image
-                      src={
-                        pokemon.sprites.other.dream_world.front_default
-                          ? pokemon.sprites.other.dream_world.front_default
-                          : pokemon.sprites.other['official-artwork']
-                              .front_default
-                      }
+                      src={pokemon.sprite}
                       alt={pokemon.name}
-                      width={125}
-                      height={125}
+                      width={135}
+                      height={135}
                     />
                   </PokemonImage>
-                  <TextHeader>{pokemon.name}</TextHeader>
+                  <PokemonName>{pokemon.name}</PokemonName>
                   <Text>
                     <b>Weight:</b> {pokemon.weight} kg
                   </Text>
@@ -67,9 +62,36 @@ export default function StatsModal({ show, onClose, pokemon }) {
                 <RadarChart stats={pokemon.stats} />
               </PokemonInfoWrapper>
               <HorizontalLine />
-              <EvolutionFormWrapper>
-                <TextHeader>Evolution Forms</TextHeader>
-              </EvolutionFormWrapper>
+              <EvolutionFormsWrapper>
+                <h2>Evolution Forms</h2>
+                <EvolutionForms>
+                  {pokemon.evolutions ? (
+                    pokemon.evolutions?.map((evolution) => (
+                      <Evolution key={evolution.name}>
+                        <Image
+                          src={evolution.sprite}
+                          alt={evolution.name}
+                          width={90}
+                          height={90}
+                        />
+                        <p>
+                          #{evolution.id}. {evolution.name}
+                        </p>
+                      </Evolution>
+                    ))
+                  ) : (
+                    <Evolution>
+                      <Image
+                        src="/pokeball.svg"
+                        alt="pokeball"
+                        width={90}
+                        height={90}
+                      />
+                      <p>{pokemon.name} has no evolutions!</p>
+                    </Evolution>
+                  )}
+                </EvolutionForms>
+              </EvolutionFormsWrapper>
             </ModalBody>
           </Modal>
         </ModalContainer>
@@ -96,11 +118,11 @@ const Modal = styled.div`
   background: white;
   color: #000000;
   width: 40%;
-  height: 69%;
+  height: max-content;
   border-radius: 14px;
   padding: 1em 1.5em;
   @media (max-width: 1440.02px) {
-    width: 70%;
+    width: 80%;
   }
   @media (max-width: 1024.02px) {
     overflow-y: scroll;
@@ -108,9 +130,6 @@ const Modal = styled.div`
       width: 0;
       background: transparent;
     }
-  }
-  @media (max-width: 768.02px) {
-    width: 80%;
   }
   @media (max-width: 425.02px) {
     width: 90%;
@@ -160,17 +179,14 @@ const Text = styled.p`
   }
 `;
 
-const TextHeader = styled.h2`
+const PokemonName = styled.h2`
+  margin: 0.1em auto 0.2em auto;
   text-transform: capitalize;
   font-size: clamp(2em, 4vw, 2.4em);
-  margin: 0.1em auto 0.2em auto;
-  &:last-child {
-    font-size: clamp(0.85em, 2.5vw, 1.05em);
-  }
 `;
 
 const PokemonImage = styled.div`
-  margin: 1em auto 0.4em auto;
+  margin: 1.5em auto 0.4em auto;
   text-align: center;
 `;
 
@@ -181,6 +197,39 @@ const Type = styled.div`
   margin-top: 0.5em;
 `;
 
-const EvolutionFormWrapper = styled.div`
-  background-color: pink;
+const EvolutionFormsWrapper = styled.div`
+  font-family: 'Raleway', sans-serif;
+  h2 {
+    font-size: 1.1em;
+  }
+  p {
+    font-size: 0.95em;
+    margin-top: 1em;
+  }
+`;
+
+const EvolutionForms = styled.div`
+  display: flex;
+  flex: 1 1 0px;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: auto;
+  margin: 2.2em auto;
+  @media (max-width: 320.02px) {
+    display: inline-block;
+  }
+`;
+
+const Evolution = styled.div`
+  margin: 0 auto;
+  text-align: center;
+  text-transform: capitalize;
+  display: flex;
+  flex-direction: column;
+  @media (max-width: 320.02px) {
+    &:not(:last-child) {
+      margin-bottom: 2.5em;
+    }
+  }
 `;
