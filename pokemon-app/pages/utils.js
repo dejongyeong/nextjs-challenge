@@ -40,3 +40,24 @@ export const useWindowSize = () => {
   }, []);
   return windowSize;
 };
+
+// useDebounce to prevent re-rendering
+// reference: https://prateeksurana.me/blog/mastering-data-fetching-with-react-query-and-next-js/
+// other method: useMemo (https://www.digitalocean.com/community/tutorials/how-to-avoid-performance-pitfalls-in-react-with-memo-usememo-and-usecallback)
+export function useDebounce(value, delay) {
+  const [debounceValue, setDebounceValue] = useState(value);
+  useEffect(() => {
+    // update debounced value after delay
+    const handler = setTimeout(() => {
+      setDebounceValue(value);
+    }, delay);
+
+    // cancel timeout to prevent debounced value from updating if value
+    // change within the delay period
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [value, delay]); // only recall if value or delay change
+
+  return debounceValue;
+}

@@ -1,71 +1,57 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { useFetchSpecificPokemon } from '../../api/useFetch';
+import {
+  useFetchSpecificCategory,
+  useFetchSpecificPokemon,
+} from '../../api/useFetch';
+import { useDebounce } from '../../utils';
 import StatsModal from './StatsModal';
 
 const PokemonList = ({
-  category,
   pokemons,
   searchValue,
   setPokemonQuery,
   setShowModal,
 }) => {
-  // TODO: improvement - handle no data message
+  const debouncedSearchValue = useDebounce(searchValue, 100); // 100 - delay value
+  const data = !debouncedSearchValue.trim()
+    ? pokemons
+    : pokemons.filter((item) => {
+        return item.name
+          .trim()
+          .toLowerCase()
+          .includes(debouncedSearchValue.toLowerCase());
+      });
 
   return (
     <>
-      {category === 'all'
-        ? pokemons.results
-            .filter((item) => {
-              return Object.values(item)
-                .join('')
-                .toLowerCase()
-                .includes(searchValue.toLowerCase());
-            })
-            .map((filtered) => (
-              <Items
-                key={filtered.name}
-                onClick={() => {
-                  setPokemonQuery(filtered.url);
-                  setShowModal(true);
-                }}
-              >
-                {filtered.name}
-              </Items>
-            ))
-        : pokemons.pokemon
-            .filter((item) => {
-              return Object.values(item.pokemon.name)
-                .join('')
-                .toLowerCase()
-                .includes(searchValue.toLowerCase());
-            })
-            .map((filtered) => (
-              <Items
-                key={filtered.pokemon.name}
-                onClick={() => {
-                  setPokemonQuery(filtered.pokemon.url);
-                  setShowModal(true);
-                }}
-              >
-                {filtered.pokemon.name}
-              </Items>
-            ))}
+      {data.length === 0 ? (
+        <p>`{debouncedSearchValue}` not found in pokedex...</p>
+      ) : (
+        data.map((filtered) => (
+          <Items
+            key={filtered.name}
+            onClick={() => {
+              setPokemonQuery(filtered.url);
+              setShowModal(true);
+            }}
+          >
+            {filtered.name}
+          </Items>
+        ))
+      )}
     </>
   );
 };
 
-export default function Pokemons({
-  categories,
-  setCategory,
-  category,
-  pokemonByCategory,
-}) {
+export default function Pokemons({ categories }) {
+  const [category, setCategory] = useState('all');
   const {
-    isLoading: pbcIsLoading,
-    isError: pbcIsError,
+    isLoading: pcIsLoading,
+    isError: pcIsError,
     data: pokemons,
-  } = pokemonByCategory;
+  } = useFetchSpecificCategory(category);
+
   const [searchValue, setSearchValue] = useState('');
 
   // set pokemon query parameter
@@ -85,12 +71,14 @@ export default function Pokemons({
         <SelectWrapper>
           <label htmlFor="categories">Categories: </label>
           {typeof window !== 'undefined' && (
+            // disable inputs including search if there's error from api call
             <select
               name="categories"
               value={category}
               onChange={(e) => {
                 setCategory(e.target.value);
               }}
+              disabled={pcIsError}
             >
               <option value="all">All</option>
               {categories?.results?.map((category, index) => (
@@ -109,14 +97,15 @@ export default function Pokemons({
             name="search"
             placeholder="Pikachu"
             onChange={(e) => setSearchValue(e.target.value)}
+            disabled={pcIsError}
           />
         </SearchWrapper>
       </SearchContainer>
-      {pbcIsLoading ? (
+      {pcIsLoading ? (
         <MessageContainer>
           <i className="fa fa-spinner fa-spin fa-3x"></i>
         </MessageContainer>
-      ) : pbcIsError ? (
+      ) : pcIsError ? (
         <MessageContainer>
           <i
             className="fa fa-exclamation-triangle fa-4x"
@@ -127,7 +116,6 @@ export default function Pokemons({
       ) : (
         <ListContainer>
           <PokemonList
-            category={category}
             pokemons={pokemons}
             searchValue={searchValue}
             setPokemonQuery={setPokemonQuery}

@@ -3,15 +3,12 @@ import styled from 'styled-components';
 import dynamic from 'next/dynamic';
 import useInView from 'react-cool-inview';
 
-import { useFetchCategories, useFetchSpecificCategory } from './api/useFetch';
+import { useFetchCategories } from './api/useFetch';
 
 const Pokemons = dynamic(() => import('./components/home/Pokemons'));
 
 export default function Home() {
   const { isLoading, data: categories, isError } = useFetchCategories();
-
-  const [category, setCategory] = useState('all');
-  const pokemonByCategory = useFetchSpecificCategory(category);
 
   // TODO: is this work? pagination or lazy loading - come back later
   // reference: https://www.better.dev/lazy-loading-next-js
@@ -38,14 +35,7 @@ export default function Home() {
         ) : (
           <>
             <div ref={observe}>
-              {inView && (
-                <Pokemons
-                  categories={categories}
-                  setCategory={setCategory}
-                  category={category}
-                  pokemonByCategory={pokemonByCategory}
-                />
-              )}
+              {inView && <Pokemons categories={categories} />}
             </div>
           </>
         )}

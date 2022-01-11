@@ -16,11 +16,19 @@ export function useFetchSpecificCategory(category) {
     // TODO: use pagination? this is hard-coded for now - future improvement
     // 898 is the last unique pokemon
     // here we are not using /pokemon-species route because it does have the type info
-    const url =
+    // since the api route is different, we can handle it here before return back to components
+    const data =
       category === 'all'
-        ? `${API_URL}/pokemon?limit=1181`
-        : `${API_URL}/type/${category}`;
-    const { data } = await axios.get(url);
+        ? await axios.get(`${API_URL}/pokemon?limit=1181`).then((res) => {
+            return res.data?.results;
+          })
+        : await axios.get(`${API_URL}/type/${category}`).then((res) => {
+            // make it to the same key from /pokemon?limit=1181 api
+            return res.data?.pokemon?.map((pok) => {
+              return pok.pokemon;
+            }, {});
+          });
+
     return data;
   };
 

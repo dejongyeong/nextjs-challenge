@@ -28,7 +28,7 @@ export default function StatsModal({ show, onClose, pokemon }) {
           <Modal>
             <ModalHeader>
               <a href="#" onClick={handleCloseClick}>
-                x
+                <i className="fa fa-times fa-xs" aria-hidden="true"></i>
               </a>
             </ModalHeader>
             <ModalBody>
@@ -117,12 +117,12 @@ const ModalContainer = styled.div`
 const Modal = styled.div`
   background: white;
   color: #000000;
-  width: 40%;
+  width: 45%;
   height: max-content;
   border-radius: 14px;
   padding: 1em 1.5em;
   @media (max-width: 1440.02px) {
-    width: 80%;
+    width: 70%;
   }
   @media (max-width: 1024.02px) {
     overflow-y: scroll;
