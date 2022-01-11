@@ -216,6 +216,9 @@ const ListContainer = styled.div`
     width: 0;
     background: transparent;
   }
+  @media (max-width: 425.02px) {
+    height: 63vh;
+  }
 `;
 
 const Items = styled.div`
