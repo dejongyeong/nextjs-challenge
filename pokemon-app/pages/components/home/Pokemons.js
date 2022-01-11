@@ -10,6 +10,7 @@ import StatsModal from './StatsModal';
 const PokemonList = ({
   pokemons,
   searchValue,
+  category,
   setPokemonQuery,
   setShowModal,
 }) => {
@@ -26,7 +27,10 @@ const PokemonList = ({
   return (
     <>
       {data.length === 0 ? (
-        <p>`{debouncedSearchValue}` not found in pokedex...</p>
+        <p>
+          `{debouncedSearchValue}` not found in pokedex in {category}{' '}
+          category...
+        </p>
       ) : (
         data.map((filtered) => (
           <Items
@@ -118,6 +122,7 @@ export default function Pokemons({ categories }) {
           <PokemonList
             pokemons={pokemons}
             searchValue={searchValue}
+            category={category}
             setPokemonQuery={setPokemonQuery}
             setShowModal={setShowModal}
           />
