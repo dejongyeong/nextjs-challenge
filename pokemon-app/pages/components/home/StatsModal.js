@@ -124,15 +124,8 @@ const Modal = styled.div`
   @media (max-width: 1440.02px) {
     width: 70%;
   }
-  @media (max-width: 1024.02px) {
-    overflow-y: scroll;
-    ::-webkit-scrollbar {
-      width: 0;
-      background: transparent;
-    }
-  }
   @media (max-width: 768.02px) {
-    height: 83%;
+    height: 80%;
   }
 `;
 
@@ -144,6 +137,15 @@ const ModalHeader = styled.div`
 
 const ModalBody = styled.div`
   padding-top: 10px;
+  height: 95%;
+  overflow-y: scroll;
+  @media (max-width: 1024.02px) {
+    overflow-y: scroll;
+    ::-webkit-scrollbar {
+      width: 0;
+      background: transparent;
+    }
+  }
 `;
 
 const HorizontalLine = styled.hr`

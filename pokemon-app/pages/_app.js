@@ -9,7 +9,7 @@ export default function MyApp({ Component, pageProps }) {
   return (
     <>
       <Head>
-        <title>NextJS Coding Challenge</title>
+        <title>PokeAPI - Cambrean NextJS Coding Challenge</title>
         <meta charSet="utf-8" />
         <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
         <meta

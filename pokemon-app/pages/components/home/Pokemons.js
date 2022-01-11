@@ -146,7 +146,7 @@ const SearchContainer = styled.div`
   display: grid;
   grid-template-columns: 0.9fr 0.9fr;
   gap: 1.5em;
-  margin: 3rem auto 1em auto;
+  margin: 1rem auto;
   padding: 0.2em;
   font-size: 0.95em;
   width: 100%;
@@ -207,7 +207,7 @@ const ListContainer = styled.div`
   max-width: 100%;
   margin: 1.2em auto;
   padding: 1.3em 1em;
-  height: 75vh;
+  height: 72vh;
   overflow-y: auto;
   ::-webkit-scrollbar {
     width: 0;
@@ -232,10 +232,12 @@ const Items = styled.div`
   -webkit-box-shadow: 1px 7px 17px -4px rgba(255, 255, 255, 0.5);
   box-shadow: 1px 7px 17px -4px rgba(255, 255, 255, 0.5);
   cursor: pointer;
-  &:hover {
-    transform: translateY(-0.5rem);
-    transition-duration: 200ms;
-    transition-timing-function: ease-in-out;
+  @media (min-width: 768.02px) {
+    &:hover {
+      transform: translateY(-0.5rem);
+      transition-duration: 200ms;
+      transition-timing-function: ease-in-out;
+    }
   }
 `;
 

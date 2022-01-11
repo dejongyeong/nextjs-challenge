@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import dynamic from 'next/dynamic';
 import useInView from 'react-cool-inview';
+import Image from 'next/image';
 
 import { useFetchCategories } from './api/useFetch';
 
@@ -19,7 +20,15 @@ export default function Home() {
   return (
     <HomeContainer>
       <MainWrapper>
-        <h1>Pokemon Wiki</h1>
+        <div style={{ paddingTop: '1em' }}>
+          {/* Image from: https://air.inc/logos/pokemon-logo */}
+          <Image
+            src="/pokemon-logo.svg"
+            alt="pokemon logo"
+            height={100}
+            width={200}
+          />
+        </div>
         {isLoading ? (
           <MessageContainer>
             <i className="fa fa-spinner fa-spin fa-5x"></i>
