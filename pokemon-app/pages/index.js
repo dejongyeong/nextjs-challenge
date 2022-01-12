@@ -2,40 +2,8 @@ import React from 'react';
 import styled, { createGlobalStyle } from 'styled-components';
 import useInView from 'react-cool-inview';
 import Image from 'next/image';
-import Head from 'next/head';
 import Pokemons from './components/home/Pokemons';
 import { useFetchCategories } from './api/useFetch';
-
-function HeadTags() {
-  return (
-    <Head>
-      <title>PokeAPI - Cambrean NextJS Coding Challenge</title>
-      <meta charSet="utf-8" />
-      <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
-      <meta
-        name="viewport"
-        content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no"
-      />
-      <meta name="description" content="Cambrean Interview Coding Challenge" />
-      <link rel="icon" href="/favicon.ico" />
-      <link rel="preconnect" href="https://fonts.googleapis.com" />
-      <link
-        rel="preconnect"
-        href="https://fonts.gstatic.com"
-        crossOrigin="true"
-      />
-      <link
-        href="https://fonts.googleapis.com/css2?family=Average+Sans&family=Montserrat&family=Open+Sans&family=Raleway&family=Rubik:wght@300;400&display=swap"
-        rel="stylesheet"
-      />
-      {/* font awesome icons */}
-      <link
-        rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
-      ></link>
-    </Head>
-  );
-}
 
 export default function Home() {
   const { isLoading, data: categories, isError } = useFetchCategories();
@@ -48,9 +16,8 @@ export default function Home() {
 
   return (
     <>
-      <HeadTags />
-      <GlobalStyle />
       <HomeContainer>
+        <GlobalStyle />
         <MainWrapper>
           <div style={{ paddingTop: '1em' }}>
             {/* Image from: https://air.inc/logos/pokemon-logo */}
@@ -74,11 +41,9 @@ export default function Home() {
               <span>Error Call to PokeAPI!! Please Try Again Later...</span>
             </ErrorContainer>
           ) : (
-            <>
-              <div ref={observe}>
-                {inView && <Pokemons categories={categories} />}
-              </div>
-            </>
+            <div ref={observe}>
+              {inView && <Pokemons categories={categories} />}
+            </div>
           )}
         </MainWrapper>
       </HomeContainer>
