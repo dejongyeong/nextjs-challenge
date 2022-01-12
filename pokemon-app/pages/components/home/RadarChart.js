@@ -1,20 +1,20 @@
 import React from 'react';
-import ReactApexChart from 'react-apexcharts';
+import dynamic from 'next/dynamic';
 import styled from 'styled-components';
-import { useWindowSize } from '../../utils';
+import { useWindowSize } from '../../../utils/utils';
 
-export default function RadarChart({ stats }) {
-  const labels = stats.map((stat) => {
-    return stat.stat.name.toUpperCase();
-  });
-  const damages = stats.map((stat) => {
-    return stat.base_stat;
-  });
+// reference: https://nextjs.org/docs/advanced-features/dynamic-import
+// make it into client-side rendering
+const ReactApexChart = dynamic(() => import('react-apexcharts'), {
+  ssr: false,
+});
+
+export default function RadarChart({ label, damages }) {
   const size = useWindowSize();
 
   const config = {
     options: {
-      labels: labels,
+      labels: label,
       dataLabels: {
         enabled: true,
         style: {
@@ -52,14 +52,12 @@ export default function RadarChart({ stats }) {
 
   return (
     <ChartContainer>
-      {typeof window !== 'undefined' && (
-        <CustomReactApexChart
-          options={config.options}
-          series={config.series}
-          height={size.width < 375.02 ? '240' : '300'}
-          type="radar"
-        />
-      )}
+      <CustomReactApexChart
+        options={config.options}
+        series={config.series}
+        height={size.width < 375.02 ? '240' : '300'}
+        type="radar"
+      />
     </ChartContainer>
   );
 }

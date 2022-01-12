@@ -2,17 +2,14 @@ import React from 'react';
 import styled from 'styled-components';
 import Image from 'next/image';
 import dynamic from 'next/dynamic';
+import { POKEMON_TYPE_COLORS } from '../../../utils/utils';
+import RadarChart from './RadarChart';
 
-import { POKEMON_TYPE_COLORS } from '../../utils';
 const COLORS = POKEMON_TYPE_COLORS;
 
 const padLeadingZeros = (num, size) => {
   return `#${num.toString().padStart(size, '0')}`;
 };
-
-// reference: https://nextjs.org/docs/advanced-features/dynamic-import
-// make it into client-side rendering
-const RadarChart = dynamic(() => import('./RadarChart'), { ssr: false });
 
 // Reference: https://devrecipes.net/modal-component-with-next-js/
 export default function StatsModal({ show, onClose, pokemon }) {
@@ -20,6 +17,15 @@ export default function StatsModal({ show, onClose, pokemon }) {
     event.preventDefault();
     onClose();
   };
+
+  // NOTE: if using SSR, can the optional '?' be unused?
+  // need further understanding of NextJS framework
+  const labels = pokemon?.stats?.map((stat) => {
+    return stat.stat.name.toUpperCase();
+  });
+  const damages = pokemon?.stats?.map((stat) => {
+    return stat.base_stat;
+  });
 
   return (
     <>
@@ -52,14 +58,14 @@ export default function StatsModal({ show, onClose, pokemon }) {
                     <b>Height:</b> {pokemon.height} m
                   </Text>
                   <PokemonTypeWrapper>
-                    {pokemon.types.map((items) => (
+                    {pokemon?.types?.map((items) => (
                       <Type key={items.slot} bg={COLORS[`${items.type.name}`]}>
                         <Text>{items.type.name}</Text>
                       </Type>
                     ))}
                   </PokemonTypeWrapper>
                 </PokemonInfo>
-                <RadarChart stats={pokemon.stats} />
+                <RadarChart label={labels} damages={damages} />
               </PokemonInfoWrapper>
               <HorizontalLine />
               <EvolutionFormsWrapper>
@@ -138,7 +144,6 @@ const ModalHeader = styled.div`
 const ModalBody = styled.div`
   padding-top: 10px;
   height: 95%;
-  overflow-y: scroll;
   @media (max-width: 1024.02px) {
     overflow-y: scroll;
     ::-webkit-scrollbar {

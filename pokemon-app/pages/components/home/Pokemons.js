@@ -4,7 +4,7 @@ import {
   useFetchSpecificCategory,
   useFetchSpecificPokemon,
 } from '../../api/useFetch';
-import { useDebounce } from '../../utils';
+import { useDebounce } from '../../../utils/utils';
 import StatsModal from './StatsModal';
 
 const PokemonList = ({
@@ -17,7 +17,7 @@ const PokemonList = ({
   const debouncedSearchValue = useDebounce(searchValue, 100); // 100 - delay value
   const data = !debouncedSearchValue.trim()
     ? pokemons
-    : pokemons.filter((item) => {
+    : pokemons?.filter((item) => {
         return item.name
           .trim()
           .toLowerCase()
@@ -26,13 +26,10 @@ const PokemonList = ({
 
   return (
     <>
-      {data.length === 0 ? (
-        <p>
-          `{debouncedSearchValue}` not found in pokedex in {category}{' '}
-          category...
-        </p>
+      {data?.length === 0 ? (
+        <p>No pokemon found in {category} category...</p>
       ) : (
-        data.map((filtered) => (
+        data?.map((filtered) => (
           <Items
             key={filtered.name}
             onClick={() => {

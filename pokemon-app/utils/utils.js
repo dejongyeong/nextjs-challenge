@@ -28,7 +28,7 @@ export const useWindowSize = () => {
   });
 
   useEffect(() => {
-    if (typeof window != 'undefined') {
+    if (typeof window !== 'undefined') {
       function handleResize() {
         setWindowSize({ width: window.innerWidth });
       }
