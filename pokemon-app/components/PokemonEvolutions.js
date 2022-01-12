@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import Image from 'next/image';
 
-export default function PokemonEvolutions() {
+export default function PokemonEvolutions({ pokemon }) {
   return (
     <EvolutionFormsWrapper>
       <h2>Evolution Forms</h2>

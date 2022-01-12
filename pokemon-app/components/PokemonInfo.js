@@ -55,11 +55,14 @@ export default function PokemonInfo({ pokemon }) {
 
 /******************** styled components ************************/
 
-const PokemonInfoWrapper = styled.div`
+const PokemonTypeWrapper = styled.div`
   display: flex;
   flex: 1 1 0px;
   gap: 0.5em;
   margin: 0 auto;
+`;
+
+const PokemonInfoWrapper = styled(PokemonTypeWrapper)`
   @media (max-width: 768.02px) {
     display: block;
   }
