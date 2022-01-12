@@ -1,9 +1,10 @@
 import React from 'react';
-import styled, { createGlobalStyle } from 'styled-components';
+import styled from 'styled-components';
+import Head from 'next/head';
 import useInView from 'react-cool-inview';
 import Image from 'next/image';
-import Pokemons from './components/home/Pokemons';
-import { useFetchCategories } from './api/useFetch';
+import Pokemons from '../components/Pokemons';
+import { useFetchCategories } from '../pages/api/useFetch.js';
 
 export default function Home() {
   const { isLoading, data: categories, isError } = useFetchCategories();
@@ -16,8 +17,12 @@ export default function Home() {
 
   return (
     <>
+      {/* resolve nextjs warning of using title tag in document.js */}
+      <Head>
+        <title>PokeAPI - Coding Challenge | De Jong Y</title>
+        <meta name="viewport" content="initial-scale=1.0, width=device-width" />
+      </Head>
       <HomeContainer>
-        <GlobalStyle />
         <MainWrapper>
           <div style={{ paddingTop: '1em' }}>
             {/* Image from: https://air.inc/logos/pokemon-logo */}
@@ -52,28 +57,6 @@ export default function Home() {
 }
 
 /******************** styled components ************************/
-
-const GlobalStyle = createGlobalStyle`
-  *,
-  *::before,
-  *::after {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-  }
-  html,
-  body,
-  input,
-  select {
-    font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, Segoe UI,
-      Roboto, Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue,
-      sans-serif;
-  }
-  a {
-    color: inherit;
-    text-decoration: none;
-  }
-`;
 
 const HomeContainer = styled.div`
   height: 100vh;

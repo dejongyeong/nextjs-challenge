@@ -1,7 +1,7 @@
 import React from 'react';
 import dynamic from 'next/dynamic';
 import styled from 'styled-components';
-import { useWindowSize } from '../../../utils/utils';
+import { useWindowSize } from '../utils/utils';
 
 // reference: https://nextjs.org/docs/advanced-features/dynamic-import
 // make it into client-side rendering

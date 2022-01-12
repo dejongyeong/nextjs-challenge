@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import Image from 'next/image';
-import { POKEMON_TYPE_COLORS } from '../../../utils/utils';
+import { POKEMON_TYPE_COLORS } from '../utils/utils';
 import RadarChart from './RadarChart';
 
 const COLORS = POKEMON_TYPE_COLORS;

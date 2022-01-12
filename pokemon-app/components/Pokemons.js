@@ -3,8 +3,8 @@ import styled from 'styled-components';
 import {
   useFetchSpecificCategory,
   useFetchSpecificPokemon,
-} from '../../api/useFetch';
-import { useDebounce } from '../../../utils/utils';
+} from '../pages/api/useFetch.js';
+import { useDebounce } from '../utils/utils';
 import StatsModal from './StatsModal';
 
 const PokemonList = ({
