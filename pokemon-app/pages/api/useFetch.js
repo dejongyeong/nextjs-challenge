@@ -13,9 +13,8 @@ export function useFetchCategories() {
 
 export function useFetchSpecificCategory(category) {
   const fetchPokemonByCategory = async (category) => {
-    // TODO: use pagination? this is hard-coded for now - future improvement
-    // 898 is the last unique pokemon
-    // here we are not using /pokemon-species route because it does have the type info
+    // TODO: use pagination? this is hard-coded for now - future improvement - 898 is the last unique pokemon
+    // here we are not using /pokemon-species route because it does not have the type info
     // since the api route is different, we can handle it here before return back to components
     const data =
       category === 'all'
@@ -32,18 +31,17 @@ export function useFetchSpecificCategory(category) {
     return data;
   };
 
-  // query will not execute if url is empty
   return useQuery(
     ['category', category],
     () => fetchPokemonByCategory(category),
     {
-      enabled: Boolean(category),
+      enabled: Boolean(category), // query will not execute if url is empty
     }
   );
 }
 
 // reason to flatten the json keys is to get look through sub keys and filter the keys that includes a specific string
-// then use the keys to retrieve pokemon evolution name. Also, if in future there's a 3rd evolution added, we can just
+// then use the keys to retrieve pokemon evolution name. Also, if in future there's a 3rd or 4th evolution added, we can just
 // extract it from the flatten nested-json. however, this approach has some caveats and might run into performance issues
 // reference: https://stackoverflow.com/questions/6393943/convert-a-javascript-string-in-dot-notation-into-an-object-reference
 function extractEvolutionForms(path, currPokemon) {
@@ -72,7 +70,9 @@ function loopEvolveForms(results) {
       name: result.data.name,
       sprite: result.data.sprites.other.dream_world.front_default
         ? result.data.sprites.other.dream_world.front_default
-        : result.data.sprites.other['official-artwork'].front_default,
+        : result.data.sprites.other['official-artwork'].front_default
+        ? result.data.sprites.front_default
+        : null,
     });
   });
   return forms;
@@ -90,7 +90,7 @@ async function fetchEvolutions(url, currPokemon) {
       return urls;
     })
     .then(async (response) => {
-      if (response?.length === 0) return null;
+      if (response.length === 0) return null;
       // axios deprecated .all function, using Promise.all js new in-built function.
       const evolves = await Promise.all(
         response.map((res) => axios.get(res))
@@ -110,11 +110,14 @@ export function useFetchSpecificPokemon(url) {
       data.species.name
     );
 
+    // sprites multiple entry
     return {
       id: data.id,
       sprite: data.sprites.other.dream_world.front_default
         ? data.sprites.other.dream_world.front_default
-        : data.sprites.other['official-artwork'].front_default,
+        : data.sprites.other['official-artwork'].front_default
+        ? data.sprites.front_default
+        : null,
       name: data.name,
       weight: data.weight,
       height: data.height,

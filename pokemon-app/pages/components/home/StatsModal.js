@@ -1,7 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
 import Image from 'next/image';
-import dynamic from 'next/dynamic';
 import { POKEMON_TYPE_COLORS } from '../../../utils/utils';
 import RadarChart from './RadarChart';
 
@@ -44,7 +43,9 @@ export default function StatsModal({ show, onClose, pokemon }) {
                   <PokemonImage>
                     {/* use other image if svg not available */}
                     <Image
-                      src={pokemon.sprite}
+                      src={
+                        pokemon.sprite ? pokemon.sprite : '/pokemon-logo.svg'
+                      }
                       alt={pokemon.name}
                       width={135}
                       height={135}
@@ -75,7 +76,11 @@ export default function StatsModal({ show, onClose, pokemon }) {
                     pokemon.evolutions?.map((evolution) => (
                       <Evolution key={evolution.name}>
                         <Image
-                          src={evolution.sprite}
+                          src={
+                            evolution.sprite
+                              ? evolution.sprite
+                              : '/pokemon-logo.svg'
+                          }
                           alt={evolution.name}
                           width={90}
                           height={90}
