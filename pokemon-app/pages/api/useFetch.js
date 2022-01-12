@@ -90,7 +90,7 @@ async function fetchEvolutions(url, currPokemon) {
       return urls;
     })
     .then(async (response) => {
-      if (response.length === 0) return null;
+      if (response?.length === 0) return null;
       // axios deprecated .all function, using Promise.all js new in-built function.
       const evolves = await Promise.all(
         response.map((res) => axios.get(res))
