@@ -11,24 +11,34 @@ export function useFetchCategories() {
   });
 }
 
+async function fetchAllPokemons() {
+  const data = await axios
+    .get(`${API_URL}/pokemon?limit=1181`)
+    .then((response) => {
+      return response.data?.results;
+    });
+  return data;
+}
+
+async function fetchSpecificCategoryPokemons(category) {
+  const data = await axios
+    .get(`${API_URL}/type/${category}`)
+    .then((response) => {
+      return response.data?.pokemon?.map((pok) => {
+        return pok.pokemon;
+      }, {});
+    });
+  return data;
+}
+
+// TODO: can we use pagination here? this is hard-coded for now
+// here we are not using /pokemon-species route because it does not have the type info
+// since the api route is different, we can handle it here before return back to components
 export function useFetchSpecificCategory(category) {
   const fetchPokemonByCategory = async (category) => {
-    // TODO: use pagination? this is hard-coded for now - future improvement - 898 is the last unique pokemon
-    // here we are not using /pokemon-species route because it does not have the type info
-    // since the api route is different, we can handle it here before return back to components
-    const data =
-      category === 'all'
-        ? await axios.get(`${API_URL}/pokemon?limit=1181`).then((res) => {
-            return res.data?.results;
-          })
-        : await axios.get(`${API_URL}/type/${category}`).then((res) => {
-            // make it to the same key from /pokemon?limit=1181 api
-            return res.data?.pokemon?.map((pok) => {
-              return pok.pokemon;
-            }, {});
-          });
-
-    return data;
+    return category === 'all'
+      ? fetchAllPokemons()
+      : fetchSpecificCategoryPokemons(category);
   };
 
   return useQuery(
