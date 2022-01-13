@@ -65,11 +65,13 @@ function extractEvolutionForms(path, currPokemon) {
   const urls = [];
   subpaths?.map((subpath) => {
     const name = subpath.split('.').reduce((obj, indx) => obj[indx], path); // join into [0][evolves_to][...] format
-    urls.push(`${API_URL}/pokemon/${name}`); // pokemon evolution form names
+    if (name !== currPokemon) {
+      urls.push(`${API_URL}/pokemon/${name}`); // pokemon evolution form names
+    }
   });
 
   // get the evolution order right. can also loop inversely
-  return urls.filter((url) => !url.includes(currPokemon)).reverse();
+  return urls.reverse();
 }
 
 function loopEvolveForms(results) {
