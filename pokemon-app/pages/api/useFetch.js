@@ -54,24 +54,26 @@ export function useFetchSpecificCategory(category) {
 // then use the keys to retrieve pokemon evolution name. Also, if in future there's a 3rd or 4th evolution added, we can just
 // extract it from the flatten nested-json. however, this approach has some caveats and might run into performance issues
 // reference: https://stackoverflow.com/questions/6393943/convert-a-javascript-string-in-dot-notation-into-an-object-reference
-function extractEvolutionForms(path, currPokemon) {
+function extractEvolutionForms(path, currPokId) {
   const subpaths =
     path?.length === 0
       ? null
       : Object.keys(flatten(path)).filter((items) =>
-          items.includes('species.name')
+          items.includes('species.url')
         );
 
-  const urls = [];
+  const evolveIds = [];
   subpaths?.map((subpath) => {
-    const name = subpath.split('.').reduce((obj, indx) => obj[indx], path); // join into [0][evolves_to][...] format
-    if (name !== currPokemon) {
-      urls.push(`${API_URL}/pokemon/${name}`); // pokemon evolution form names
+    const url = subpath.split('.').reduce((obj, indx) => obj[indx], path); // join into [0][evolves_to][...] format
+    const evolveId = Number(url.split('/').slice(-2)[0]); // get the id from url, e.g., ...pokemon-species/1/
+    if (evolveId !== currPokId) {
+      evolveIds.push(evolveId); // pokemon evolution form ids
     }
   });
 
-  // get the evolution order right. can also loop inversely
-  return urls.reverse();
+  return evolveIds.sort((a, b) => {
+    return a - b;
+  }); // get evolution form in ascending order by id
 }
 
 function loopEvolveForms(results) {
@@ -90,22 +92,25 @@ function loopEvolveForms(results) {
   return forms;
 }
 
-async function fetchEvolutions(url, currPokemon) {
+async function fetchEvolutions(url) {
   const data = await axios
     .get(url)
     .then((response) => {
-      return response.data['evolution_chain'].url;
+      return {
+        url: response.data['evolution_chain'].url,
+        currPokId: response.data.id,
+      };
     })
-    .then(async (response) => {
-      const evolution = await axios.get(response);
-      const urls = extractEvolutionForms(evolution.data?.chain, currPokemon);
-      return urls;
+    .then(async ({ url, currPokId }) => {
+      const evolution = await axios.get(url);
+      const ids = extractEvolutionForms(evolution.data?.chain, currPokId);
+      return ids;
     })
     .then(async (response) => {
       if (response.length === 0) return null;
-      // axios deprecated .all function, using Promise.all js new in-built function.
+      // axios deprecated .all function, using Promise.all (js new in-built function).
       const evolves = await Promise.all(
-        response.map((res) => axios.get(res))
+        response.map((res) => axios.get(`${API_URL}/pokemon/${res}`))
       ).then((results) => {
         return loopEvolveForms(results);
       });
@@ -117,10 +122,7 @@ async function fetchEvolutions(url, currPokemon) {
 export function useFetchSpecificPokemon(url) {
   const fetchSpecificPokemon = async (url) => {
     const { data } = await axios.get(url);
-    const evolutions = await fetchEvolutions(
-      data.species.url,
-      data.species.name
-    );
+    const evolutions = await fetchEvolutions(data.species.url);
 
     // sprites multiple entry
     return {
