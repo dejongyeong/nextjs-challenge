@@ -8,7 +8,7 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "apexcharts": "^3.32.1",
+    "apexcharts": "^5.3.3",
     "axios": "^1.11.0",
     "flat": "^5.0.2",
     "next": "^15.5.0",
